@@ -1,5 +1,5 @@
 # Use an existing base image as a starting point
-FROM julia:1.9.2-bulleye
+FROM julia:1.9.2
 
 # Set metadata for the image (optional)
 LABEL maintainer="Mateo Velez <mateo.velezcobian@gmail.com>"
@@ -14,7 +14,7 @@ WORKDIR /MyAPI
 COPY . /MyAPI
 
 # Install dependencies (if needed)
-RUN julia -e 'using Pkg; Pkg.activate("/MyAPI")'
+RUN julia -e 'using Pkg; Pkg.activate("/MyAPI"); Pkg.instantiate();'
 
 # Expose a port (if the application inside the container listens on a specific port)
 EXPOSE 8000
