@@ -14,7 +14,7 @@ WORKDIR /MyAPI
 COPY . /MyAPI
 
 # Install dependencies (if needed)
-RUN julia -e 'using Pkg; Pkg.activate("/MyAPI"); Pkg.instantiate();'
+RUN julia --project=/MyAPI -e 'using Pkg; Pkg.instantiate();'
 
 # Expose a port (if the application inside the container listens on a specific port)
 EXPOSE 8000
