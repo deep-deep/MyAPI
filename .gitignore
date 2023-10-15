@@ -7,7 +7,7 @@ log/*
 sessions/*
 !*.gitkeep
 Manifest.toml
-.env
+.env*
 
 # Vagrant
 .vagrant
