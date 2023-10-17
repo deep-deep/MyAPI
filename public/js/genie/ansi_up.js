@@ -383,7 +383,7 @@ var AnsiUp = (function () {
             style_string = " style=\"" + styles.join(';') + "\"";
         return "<span" + style_string + class_string + ">" + txt + "</span>";
     };
-    ;
+    
     AnsiUp.prototype.process_hyperlink = function (pkt) {
         var parts = pkt.url.split(':');
         if (parts.length < 1)
