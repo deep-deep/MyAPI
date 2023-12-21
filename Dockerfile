@@ -1,23 +1,41 @@
-# Use an existing base image as a starting point
-FROM julia:1.9.2
+# pull latest julia image
+FROM --platform=linux/amd64 julia:latest
 
-# Set metadata for the image (optional)
-LABEL maintainer="Mateo Velez <mateo.velezcobian@gmail.com>"
+# create dedicated user
+RUN useradd --create-home --shell /bin/bash genie
 
-# Set environment variables (optional)
-# ENV ENV_VAR_NAME=env_var_value
+# set up the app
+RUN mkdir /home/genie/app
+COPY . /home/genie/app
+WORKDIR /home/genie/app
 
-# Create a working directory inside the container
-WORKDIR /MyAPI
+# configure permissions
+RUN chown -R genie:genie /home/
 
-# Copy files and directories from your local machine to the container
-COPY . /MyAPI
+RUN chmod +x bin/repl
+RUN chmod +x bin/server
+RUN chmod +x bin/runtask
 
-# Install dependencies (if needed)
-RUN julia --project=/MyAPI -e 'using Pkg; Pkg.instantiate();'
+# switch user
+USER genie
 
-# Expose a port (if the application inside the container listens on a specific port)
+# instantiate Julia packages
+RUN julia -e "using Pkg; Pkg.activate(\".\"); Pkg.instantiate(); Pkg.precompile(); "
+
+# ports
 EXPOSE 8000
+EXPOSE 80
 
-# Define the command to run when the container starts
-CMD ["/MyAPI/bin/server"]
+# set up app environment
+ENV JULIA_DEPOT_PATH "/home/genie/.julia"
+ENV GENIE_ENV "dev"
+ENV GENIE_HOST "0.0.0.0"
+ENV PORT "8000"
+ENV WSPORT "8000"
+ENV EARLYBIND "true"
+
+# run app
+CMD ["bin/server"]
+
+# or maybe include a Julia file
+# CMD julia -e 'using Pkg; Pkg.activate("."); include("IrisClustering.jl"); '
